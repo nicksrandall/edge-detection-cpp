@@ -1,0 +1,23 @@
+{
+  "name": "wasm",
+  "scripts": {
+    "install": "napa && npm run install:zlib",
+    "install:zlib": "mkdir -p node_modules/zlib && tar -zxvf zbar-0.10.tar.gz -C node_modules/zlib --strip-components=1",
+    "build:regular": "docker run --rm -v $(pwd):/src trzeci/emscripten ./build.sh",
+    "build:threads": "docker run --rm -v $(pwd):/src trzeci/emscripten ./build-threads.sh",
+    "build": "npm run build:regular && npm run build:threads",
+    "compress:regular": "rm -f detect.br.wasm && brotli -Z detect.wasm -o detect.br.wasm",
+    "compress:threads": "rm -f detect-threads.br.wasm && brotli -Z detect-threads.wasm -o detect-threads.br.wasm && rm -f detect-threads.js.br.mem && brotli -Z detect-threads.js.mem -o detect-threads.js.br.mem",
+    "compress": "npm run compress:regular && npm run compress:threads"
+  },
+  "napa": {
+    "opencv": "opencv/opencv#3.1.0"
+  },
+  "napa-config": {
+    "cache": false
+  },
+  "devDependencies": {
+    "napa": "^3.0.0"
+  },
+  "dependencies": {}
+}
